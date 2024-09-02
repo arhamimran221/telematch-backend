@@ -1,4 +1,4 @@
-package com.telematch.com;
+package com.telematch.Telematch;
 
 import com.getcapacitor.BridgeActivity;
 
