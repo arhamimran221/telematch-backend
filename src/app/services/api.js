@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API_BASE_URL = "http://localhost:3000/api"; // Use the appropriate base URL
+const API_BASE_URL = "https://telematch-backend.vercel.app/api"; // Use the appropriate base URL
 
 // Fetch notifications
 export const fetchNotifications = async () => {
