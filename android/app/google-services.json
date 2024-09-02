@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "47264698868",
+    "project_id": "telematchapp",
+    "storage_bucket": "telematchapp.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:47264698868:android:baa040e21b8f85775169a1",
+        "android_client_info": {
+          "package_name": "com.telematch.Telematch"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAKgniuz5aEqvUK_b2ZCYbmFRu0ZyIjuP0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

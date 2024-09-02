@@ -9,32 +9,24 @@ import {
   Typography,
 } from "@material-tailwind/react";
 import Link from "next/link";
-import { signupUser } from "../app/services/register-user"; // Import the signup API call
+import { signInUser } from "../services/signin";
 import { useRouter } from "next/navigation";
 
 const schema = z.object({
-  name: z.string().min(1, "Name is required"),
-  email: z
-    .string()
-    .email("Invalid email address")
-    .nonempty("Email is required"),
+  username: z.string().nonempty("Username is required"), // Changed 'email' to 'username'
   password: z.string().min(6, "Password must be at least 6 characters long"),
-  terms: z
-    .boolean()
-    .refine((val) => val === true, "You must accept the terms and conditions"),
+  terms: z.boolean().optional(),
 });
 
-const SignupForm = () => {
+const SignIn = () => {
   const [formValues, setFormValues] = useState({
-    name: "",
-    email: "",
+    username: "", // Changed 'email' to 'username'
     password: "",
     terms: false,
   });
+  const router = useRouter();
 
   const [errors, setErrors] = useState({});
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const router = useRouter();
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -50,19 +42,13 @@ const SignupForm = () => {
     try {
       schema.parse(formValues);
       setErrors({});
-      setIsSubmitting(true);
-
-      // Call the API to sign up the user
-      const response = await signupUser({
-        name: formValues.name,
-        email: formValues.email,
+      const response = await signInUser({
+        username: formValues.username, // Changed 'email' to 'username'
         password: formValues.password,
       });
-
-      console.log("User signed up successfully:", response);
-      if (response.userId) {
-        localStorage.setItem("myID", response.userId);
-        localStorage.setItem("userName", formValues.name);
+      console.log("Form data submitted:", response);
+      if (response.token) {
+        localStorage.setItem("token", response.token);
         router.push("/home");
       }
     } catch (err) {
@@ -74,23 +60,18 @@ const SignupForm = () => {
           return acc;
         }, {});
         setErrors(newErrors);
-      } else {
-        console.error("Error during sign up:", err);
-        setErrors({ apiError: "Failed to sign up. Please try again later." });
       }
-    } finally {
-      setIsSubmitting(false);
     }
   };
 
   return (
     <div className="w-[90%] m-auto h-[100vh] flex flex-col justify-center items-center">
-      <Card color="transparent" shadow={false}>
+      <Card color="transparent" shadow={false} className="w-[100%]">
         <Typography variant="h4" color="blue-gray">
-          Sign Up
+          Sign In
         </Typography>
         <Typography color="gray" className="mt-1 font-normal">
-          Welcome to telematch! Enter your details to register.
+          Welcome to telematch! Enter your details.
         </Typography>
         <form
           className="mt-8 mb-2 w-full max-w-screen-lg sm:w-96"
@@ -98,46 +79,24 @@ const SignupForm = () => {
         >
           <div className="mb-1 flex flex-col gap-6">
             <Typography variant="h6" color="blue-gray" className="-mb-3">
-              Your Name
-            </Typography>
-            <Input
-              size="lg"
-              placeholder="John Doe"
-              name="name"
-              value={formValues.name}
-              onChange={handleChange}
-              className={`!border-t-blue-gray-200 focus:!border-t-gray-900 ${
-                errors.name ? "border-red-500" : ""
-              }`}
-              labelProps={{
-                className: "before:content-none after:content-none",
-              }}
-            />
-            {errors.name && (
-              <p className="text-red-500 italic text-[13px] mt-[-15px]">
-                {errors.name}
-              </p>
-            )}
-
-            <Typography variant="h6" color="blue-gray" className="-mb-3">
               Your Email
             </Typography>
             <Input
               size="lg"
-              placeholder="name@mail.com"
-              name="email"
-              value={formValues.email}
+              placeholder="Enter your email"
+              name="username" // Changed 'name' to 'username'
+              value={formValues.username}
               onChange={handleChange}
               className={`!border-t-blue-gray-200 focus:!border-t-gray-900 ${
-                errors.email ? "border-red-500" : ""
+                errors.username ? "border-red-500" : "" // Updated error reference from 'email' to 'username'
               }`}
               labelProps={{
                 className: "before:content-none after:content-none",
               }}
             />
-            {errors.email && (
+            {errors.username && ( // Updated error reference from 'email' to 'username'
               <p className="text-red-500 italic text-[13px] mt-[-15px]">
-                {errors.email}
+                {errors.username}
               </p>
             )}
 
@@ -191,24 +150,13 @@ const SignupForm = () => {
             </p>
           )}
 
-          {errors.apiError && (
-            <p className="text-red-500 italic text-[13px] mt-2">
-              {errors.apiError}
-            </p>
-          )}
-
-          <Button
-            className="mt-6"
-            fullWidth
-            type="submit"
-            disabled={isSubmitting}
-          >
-            {isSubmitting ? "Signing Up..." : "Sign Up"}
+          <Button className="mt-6" fullWidth type="submit">
+            Sign In
           </Button>
           <Typography color="gray" className="mt-4 text-center font-normal">
-            Already have an account?{" "}
-            <Link href="/signin" className="font-bold text-gray-900">
-              Sign In
+            Don’t have an account?{" "}
+            <Link href="/" className="font-bold text-gray-900">
+              Sign Up
             </Link>
           </Typography>
         </form>
@@ -217,4 +165,4 @@ const SignupForm = () => {
   );
 };
 
-export default SignupForm;
+export default SignIn;
